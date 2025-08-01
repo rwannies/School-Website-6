@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despatch Preparatory School</title>
+    <meta name="description" content="Learn about Despatch Preparatory School's mission, history, academic programs, and upcoming events.">
+    <meta name="keywords" content="Despatch Preparatory School, education, academics, events, South Africa">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <style>
+        .hero-bg {
+            background: linear-gradient(135deg, #00307ef5, #105a01, #000000);
+            background-size: 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideInLeft 0.8s ease-out forwards;
+        }
+
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(30px);
+            animation: slideInRight 0.8s ease-out forwards;
+        }
+
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .scale-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .scale-hover:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .card {
+            transition: transform 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #f59e0b;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .input-focus {
+            transition: all 0.3s ease;
+        }
+
+        .input-focus:focus {
+            transform: scale(1.02);
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+            outline: none;
+        }
+
+        .button-pulse {
+            transition: all 0.3s ease;
+        }
+
+        .button-pulse:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .progress-bar {
+            transition: width 1.5s ease-out;
+        }
+
+        @keyframes grow {
+            to { width: var(--progress-width); }
+        }
+
+        .timeline-item:hover {
+            transform: translateX(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .tab-button.active {
+            border-bottom: 3px solid #f59e0b;
+        }
+
+        .green-button {
+            transition: all 0.3s ease;
+        }
+
+        .green-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px #16a34a; /* green-600 */
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: slideInTop 0.3s ease-out;
+        }
+
+        @keyframes slideInTop {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 640px) {
+            .card {
+                padding: 1.25rem;
+            }
+            h2 {
+                font-size: 1.75rem;
+            }
+            h3 {
+                font-size: 1.25rem;
+            }
+            p {
+                font-size: 0.875rem;
+            }
+            .modal-content {
+                padding: 1rem;
+                width: 95%;
+            }
+            #events-list {
+                padding: 0 1rem;
+            }
+            #calendar {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="images/school-logo.png" alt="Despatch Preparatory School Logo" class="h-16 mr-4">
+                <h1 class="text-2xl font-bold text-blue-600">Despatch Preparatory School</h1>
+            </div>
+            <div class="space-x-6">
+                <strong><a href="#home" class="nav-link text-lg text-gray-700 hover:text-blue-600">Home</a></strong>
+                <strong><a href="#about" class="nav-link text-lg text-gray-700 hover:text-blue-600">About</a></strong>
+                <strong><a href="#academics" class="nav-link text-lg text-gray-700 hover:text-blue-600">Academics</a></strong>
+                <strong><a href="#events" class="nav-link text-lg text-gray-700 hover:text-blue-600">Events</a></strong>
+                <strong><a href="#contact" class="nav-link text-lg text-gray-700 hover:text-blue-600">Contact</a></strong>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-bg h-screen flex items-center justify-center text-center text-white">
+        <div class="fade-in">
+            <h2 class="text-4xl font-extrabold mb-4">Welcome to</h2>
+            <h2 class="text-5xl font-extrabold mb-4">Despatch Preparatory School</h2>
+            <p class="text-xl mb-6 max-w-2xl mx-auto">The school on the hill where dreams comes through.</p>
+            <p class="text-xl mb-6 max-w-2xl mx-auto">Nurturing young minds for a bright future.</p>
+            <a href="#about" class="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold scale-hover">Learn More</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 bg-gray-100 flex items-center" role="region" aria-labelledby="about-heading">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 id="about-heading" class="text-3xl font-bold text-center mb-12 slide-in-left">About Our School</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <article class="card bg-white p-6 rounded-lg shadow-md slide-in-left" style="animation-delay: 0.2s;">
+                    <h3 class="text-xl font-semibold mb-4">Our Mission</h3>
+                    <p class="text-gray-600">To provide a holistic education that fosters creativity, critical thinking, and compassion in a supportive environment.</p>
+                    <p class="text-gray-600 mt-4">We are committed to nurturing each student's unique talents, encouraging a love for learning, and preparing them for global citizenship.</p>
+                    <p class="text-gray-600 mt-4">Our dedicated staff works tirelessly to create an environment where every child feels valued and empowered.</p>
+                </article>
+                <article class="card bg-white p-6 rounded-lg shadow-md slide-in-right" style="animation-delay: 0.4s;">
+                    <h3 class="text-xl font-semibold mb-4">Our History</h3>
+                    <p class="text-gray-600">Founded in 1980, Despatch Preparatory School has been a cornerstone of quality education in our community for over four decades.</p>
+                    <p class="text-gray-600 mt-4">Our legacy includes thousands of graduates who have gone on to excel in various fields, carrying forward our values of integrity and excellence.</p>
+                    <p class="text-gray-600 mt-4">We continue to build on this foundation, adapting to modern educational needs while staying true to our core principles.</p>
+                </article>
+            </div>
+            <div class="mt-12 flex justify-center space-x-4">
+                <a href="#contact" class="inline-block bg-green-500 text-white px-6 py-3 rounded-full font-semibold green-button">Join Our Community</a>
+                <a href="#staff" class="inline-block bg-green-500 text-white px-6 py-3 rounded-full font-semibold green-button">Meet Our Staff</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Academics Section -->
+    <section id="academics" class="py-16 flex items-center" role="region" aria-labelledby="academics-heading">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 id="academics-heading" class="text-3xl font-bold text-center mb-12 slide-in-left">Academics</h2>
+            <div class="tabs mt-8">
+                <div class="flex space-x-4 mb-6 justify-center" role="tablist">
+                    <button class="tab-button px-4 py-2 bg-blue-600 text-white rounded-lg scale-hover active" data-tab="core" role="tab" aria-selected="true" aria-controls="core">Core Curriculum</button>
+                    <button class="tab-button px-4 py-2 bg-gray-200 text-gray-800 rounded-lg scale-hover" data-tab="extra" role="tab" aria-selected="false" aria-controls="extra">Extracurriculars</button>
+                    <button class="tab-button px-4 py-2 bg-gray-200 text-gray-800 rounded-lg scale-hover" data-tab="tech" role="tab" aria-selected="false" aria-controls="tech">Technology Integration</button>
+                </div>
+                <article id="core" class="tab-content card bg-blue-50 p-8 rounded-lg shadow-md" role="tabpanel" aria-hidden="false">
+                    <h3 class="text-xl font-semibold mb-4">Core Curriculum</h3>
+                    <p class="text-gray-600">Comprehensive programs in Math, Science, Language Arts, and Social Studies.</p>
+                    <p class="text-gray-600 mt-4">Our curriculum is designed to challenge students while fostering a deep understanding of fundamental concepts.</p>
+                    <p class="text-gray-600 mt-4">We emphasize interactive learning methods to engage students and promote critical thinking skills.</p>
+                </article>
+                <article id="extra" class="tab-content card bg-blue-50 p-8 rounded-lg shadow-md hidden" role="tabpanel" aria-hidden="true">
+                    <h3 class="text-xl font-semibold mb-4">Extracurriculars</h3>
+                    <p class="text-gray-600">From sports to arts, our activities encourage well-rounded development.</p>
+                    <p class="text-gray-600 mt-4">Students can explore their passions through clubs like drama, music, and robotics.</p>
+                    <p class="text-gray-600 mt-4">Our programs are tailored to spark creativity and build teamwork skills.</p>
+                </article>
+                <article id="tech" class="tab-content card bg-blue-50 p-8 rounded-lg shadow-md hidden" role="tabpanel" aria-hidden="true">
+                    <h3 class="text-xl font-semibold mb-4">Technology Integration</h3>
+                    <p class="text-gray-600">Modern tools and coding classes to prepare students for the future.</p>
+                    <p class="text-gray-600 mt-4">We incorporate STEM-focused learning with access to cutting-edge technology labs.</p>
+                    <p class="text-gray-600 mt-4">Our students gain hands-on experience with programming and digital innovation.</p>
+                </article>
+            </div>
+            <div class="mt-8 slide-in-left" style="animation-delay: 0.8s;">
+                <p class="text-gray-600">Student Pass Rate: <span class="inline-block w-64 bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-blue-600 h-2.5 rounded-full progress-bar" style="--progress-width: 95%; animation: grow 1.5s ease-out forwards;"></div>
+                </span> 95%</p>
+                <p class="text-gray-600 mt-4">STEM Participation: <span class="inline-block w-64 bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-blue-600 h-2.5 rounded-full progress-bar" style="--progress-width: 80%; animation: grow 1.5s ease-out forwards;"></div>
+                </span> 80%</p>
+            </div>
+            <div class="mt-8 text-center slide-in-right" style="animation-delay: 1s;">
+                <button id="download-curriculum" class="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold button-pulse">Download Curriculum</button>
+                <a href="#contact" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-full font-semibold button-pulse ml-4">Explore Our Programs</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section id="events" class="py-16 bg-gray-100 flex items-center" role="region" aria-labelledby="events-heading">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 id="events-heading" class="text-3xl font-bold text-center mb-12 slide-in-left">Upcoming Events</h2>
+            <div class="mb-8">
+                <input type="text" id="event-search" placeholder="Search events..." class="w-full max-w-md mx-auto p-3 rounded-lg text-gray-800 input-focus" aria-label="Search events by title or description">
+            </div>
+            <div class="flex space-x-4 mb-8 justify-center" role="tablist">
+                <button class="filter-button px-4 py-2 bg-blue-600 text-white rounded-lg scale-hover flex items-center" data-filter="all" role="tab" aria-selected="true">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18"></path></svg>
+                    All
+                </button>
+                <button class="filter-button px-4 py-2 bg-gray-200 text-gray-800 rounded-lg scale-hover flex items-center" data-filter="academic" role="tab" aria-selected="false">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    Academic
+                </button>
+                <button class="filter-button px-4 py-2 bg-gray-200 text-gray-800 rounded-lg scale-hover flex items-center" data-filter="sports" role="tab" aria-selected="false">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-7 7v6m-7-6l2 2m0 0l7 7 7-7"></path></svg>
+                    Sports
+                </button>
+            </div>
+            <div class="flex justify-center mb-8">
+                <button id="list-view" class="px-4 py-2 bg-blue-600 text-white rounded-lg scale-hover mr-2">List View</button>
+                <button id="calendar-view" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg scale-hover">Calendar View</button>
+            </div>
+            <div class="space-y-6" id="events-list"></div>
+            <div id="calendar" class="hidden slide-in-right" style="animation-delay: 0.2s;"></div>
+            <div id="event-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h3 id="modal-title" class="text-xl font-semibold mb-4"></h3>
+                    <p id="modal-date" class="text-gray-600 mb-2"></p>
+                    <p id="modal-description" class="text-gray-600 mb-4"></p>
+                    <p id="modal-time" class="text-gray-600 mb-2"></p>
+                    <p id="modal-location" class="text-gray-600 mb-4"></p>
+                    <a id="modal-register" href="#" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg button-pulse">Register Now</a>
+                </div>
+            </div>
+            <div class="mt-12 text-center">
+                <p class="text-gray-600 text-lg max-w-600 mx-auto slide-in-left" style="animation-delay: 0.8s;">Our events bring together students, families, and the community to celebrate learning, creativity, and collaboration.</p>
+                <p class="text-gray-600 text-lg max-w-md mx-auto mt-4 slide-in-right" style="animation-delay: 1s;">From academic showcases to sports, there’s always something happening at Despatch Preparatory.</p>
+                <a href="#Events" class="mt-6 inline-block bg-blue-600 text-white px-6 py-3 rounded-full font-semibold button-pulse">Get Involved</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-blue-600 text-white flex items-center" role="region" aria-labelledby="contact-heading">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center w-full">
+            <h2 id="contact-heading" class="text-3xl font-bold text-center mb-12 slide-in-left">Get in Touch</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+                <div class="slide-in-left" style="animation-delay: 0.2s;">
+                    <h3 class="text-xl font-semibold mb-4">Contact Information</h3>
+                    <p class="text-gray-200">Email: info@despatchprep.co.za</p>
+                    <p class="text-gray-200">Phone: +27 41 123 4567</p>
+                    <p class="text-gray-200">Address: 123 School Lane, Despatch, South Africa</p>
+                    <p class="text-gray-200 mt-4">Office Hours: Monday - Friday, 8:00 AM - 4:00 PM</p>
+                    <p class="text-gray-200 mt-4">Follow us on social media for updates and news!</p>
+                    <div class="mt-4 flex space-x-4">
+                        <a href="#" class="text-gray-200 hover:text-blue-300 scale-hover">Facebook</a>
+                        <a href="#" class="text-gray-200 hover:text-blue-300 scale-hover">Twitter</a>
+                        <a href="#" class="text-gray-200 hover:text-blue-300 scale-hover">Instagram</a>
+                    </div>
+                </div>
+                <div class="slide-in-right" style="animation-delay: 0.4s;">
+                    <h3 class="text-xl font-semibold mb-4">Send Us a Message</h3>
+                    <div>
+                        <input type="text" placeholder="Name" class="w-full p-3 mb-4 rounded-lg text-gray-800 input-focus" aria-label="Name">
+                        <input type="email" placeholder="Email" class="w-full p-3 mb-4 rounded-lg text-gray-800 input-focus" aria-label="Email">
+                        <textarea placeholder="Message" class="w-full p-3 rounded-lg text-gray-800 input-focus" rows="6" aria-label="Message"></textarea>
+                        <button class="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold button-pulse mt-4">Send</button>
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-blue-600 text-gray-200 py-4 mt-8 w-full text-center slide-in-left" style="animation-delay: 0.6s;">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <p class="text-sm">&copy; 2025 Despatch Preparatory School. All rights reserved.</p>
+                </div>
+            </footer>
+        </div>
+    </section>
+
+    <script defer>
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+
+        function filledCell(cell) {
+            return cell !== '' && cell != null && cell !== undefined;
+        }
+
+        function loadFileData(filename) {
+            if (!filename) {
+                console.error('No filename provided');
+                return '';
+            }
+
+            if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+                try {
+                    const workbook = XLSX.read(gk_fileData[filename], { type: 'base64', cellDates: true });
+                    const result = [];
+
+                    for (const sheetName of workbook.SheetNames) {
+                        const worksheet = workbook.Sheets[sheetName];
+                        let jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+
+                        jsonData = jsonData.filter(row => row.some(filledCell));
+
+                        if (jsonData.length === 0) continue;
+
+                        let headerRowIndex = 0;
+                        for (let i = 0; i < jsonData.length - 1 && i < 25; i++) {
+                            const currentFilled = jsonData[i].filter(filledCell).length;
+                            const nextFilled = jsonData[i + 1]?.filter(filledCell).length || 0;
+                            if (currentFilled >= nextFilled) {
+                                headerRowIndex = i;
+                                break;
+                            }
+                        }
+
+                        const filteredData = jsonData.slice(headerRowIndex);
+                        const csvSheet = XLSX.utils.aoa_to_sheet(filteredData);
+                        const csv = XLSX.utils.sheet_to_csv(csvSheet, { FS: ',', RS: '\n' });
+                        result.push(`Sheet: ${sheetName}\n${csv}`);
+                    }
+
+                    return result.join('\n\n');
+                } catch (e) {
+                    console.error(`Error processing XLSX file ${filename}:`, e.message);
+                    return '';
+                }
+            }
+
+            return gk_fileData[filename] || '';
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Tab switching for academics
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                console.log(`Switching to tab: ${button.getAttribute('data-tab')}`);
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                    content.setAttribute('aria-hidden', 'true');
+                    content.style.opacity = '0';
+                });
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.replace('bg-blue-600', 'bg-gray-200');
+                    btn.classList.replace('text-white', 'text-gray-800');
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-selected', 'false');
+                });
+                const tab = button.getAttribute('data-tab');
+                const activeTab = document.getElementById(tab);
+                activeTab.classList.remove('hidden');
+                activeTab.setAttribute('aria-hidden', 'false');
+                activeTab.style.opacity = '1';
+                button.classList.replace('bg-gray-200', 'bg-blue-600');
+                button.classList.replace('text-gray-800', 'text-white');
+                button.classList.add('active');
+                button.setAttribute('aria-selected', 'true');
+                console.log(`Active tab content: ${activeTab.innerHTML}`);
+            });
+        });
+
+        // Download curriculum
+        document.getElementById('download-curriculum').addEventListener('click', () => {
+            const csvData = loadFileData('curriculum.xlsx');
+            if (csvData) {
+                const blob = new Blob([csvData], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'curriculum.csv';
+                a.click();
+                URL.revokeObjectURL(url);
+            } else {
+                alert('Failed to load curriculum data.');
+            }
+        });
+
+        // Populate events with additional details
+        const events = [
+            { date: "2025-08-10", title: "Science Fair", description: "Showcase of student projects in the school hall.", category: "academic", time: "10:00 AM - 2:00 PM", location: "School Hall", registerLink: "#register-science-fair" },
+            { date: "2025-09-05", title: "Sports Day", description: "Annual sports event with fun activities for all.", category: "sports", time: "8:00 AM - 3:00 PM", location: "School Field", registerLink: "#register-sports-day" },
+            { date: "2025-10-20", title: "Parent-Teacher Meeting", description: "Discuss student progress with teachers.", category: "academic", time: "3:00 PM - 6:00 PM", location: "Main Building", registerLink: "#register-ptm" }
+        ];
+
+        const eventsList = document.getElementById('events-list');
+        const eventSearch = document.getElementById('event-search');
+        const eventModal = document.getElementById('event-modal');
+        const closeModal = document.querySelector('.close-button');
+
+        function getDaysUntil(dateStr) {
+            const eventDate = new Date(dateStr);
+            const today = new Date('2025-07-27'); // Current date as per instructions
+            const diffTime = eventDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays > 0 ? diffDays : 0;
+        }
+
+        function renderEvents(filter = 'all', searchQuery = '') {
+            eventsList.innerHTML = '';
+            const filteredEvents = events.filter(event => {
+                const matchesFilter = filter === 'all' || event.category === filter;
+                const matchesSearch = event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                     event.description.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesFilter && matchesSearch;
+            });
+
+            filteredEvents.forEach((event, index) => {
+                const daysUntil = getDaysUntil(event.date);
+                const eventCard = document.createElement('div');
+                eventCard.className = 'card bg-white p-6 rounded-lg shadow-md slide-in-left';
+                eventCard.style.animationDelay = `${0.2 * (index + 1)}s`;
+                eventCard.innerHTML = `
+                    <h3 class="text-xl font-semibold mb-2">${event.title}</h3>
+                    <p class="text-gray-600 mb-2"><strong>${event.date}</strong></p>
+                    <p class="text-gray-600 mb-2">${event.description}</p>
+                    <p class="text-gray-600 mb-4">Days until event: ${daysUntil}</p>
+                    <button class="register-button mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg button-pulse" data-title="${event.title}" data-date="${event.date}" data-description="${event.description}" data-time="${event.time}" data-location="${event.location}" data-register="${event.registerLink}">Register</button>
+                `;
+                eventsList.appendChild(eventCard);
+            });
+
+            // Add event listeners to register buttons
+            document.querySelectorAll('.register-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    document.getElementById('modal-title').textContent = button.dataset.title;
+                    document.getElementById('modal-date').textContent = `Date: ${button.dataset.date}`;
+                    document.getElementById('modal-description').textContent = button.dataset.description;
+                    document.getElementById('modal-time').textContent = `Time: ${button.dataset.time}`;
+                    document.getElementById('modal-location').textContent = `Location: ${button.dataset.location}`;
+                    document.getElementById('modal-register').href = button.dataset.register;
+                    eventModal.style.display = 'flex';
+                    eventModal.focus();
+                });
+            });
+        }
+
+        // Event filtering
+        document.querySelectorAll('.filter-button').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.filter-button').forEach(btn => {
+                    btn.classList.replace('bg-blue-600', 'bg-gray-200');
+                    btn.classList.replace('text-white', 'text-gray-800');
+                    btn.setAttribute('aria-selected', 'false');
+                });
+                button.classList.replace('bg-gray-200', 'bg-blue-600');
+                button.classList.replace('text-gray-800', 'text-white');
+                button.setAttribute('aria-selected', 'true');
+                const filter = button.getAttribute('data-filter');
+                renderEvents(filter, eventSearch.value);
+            });
+        });
+
+        // Event search
+        eventSearch.addEventListener('input', () => {
+            const filter = document.querySelector('.filter-button.bg-blue-600').getAttribute('data-filter');
+            renderEvents(filter, eventSearch.value);
+        });
+
+        // Modal close
+        closeModal.addEventListener('click', () => {
+            eventModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === eventModal) {
+                eventModal.style.display = 'none';
+            }
+        });
+
+        // Keyboard navigation for modal
+        eventModal.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                eventModal.style.display = 'none';
+            }
+        });
+
+        // List and calendar view toggle
+        document.getElementById('list-view').addEventListener('click', () => {
+            document.getElementById('events-list').classList.remove('hidden');
+            document.getElementById('calendar').classList.add('hidden');
+            document.getElementById('list-view').classList.replace('bg-gray-200', 'bg-blue-600');
+            document.getElementById('list-view').classList.replace('text-gray-800', 'text-white');
+            document.getElementById('calendar-view').classList.replace('bg-blue-600', 'bg-gray-200');
+            document.getElementById('calendar-view').classList.replace('text-white', 'text-gray-800');
+            const filter = document.querySelector('.filter-button.bg-blue-600').getAttribute('data-filter');
+            renderEvents(filter, eventSearch.value);
+        });
+
+        document.getElementById('calendar-view').addEventListener('click', () => {
+            document.getElementById('events-list').classList.add('hidden');
+            document.getElementById('calendar').classList.remove('hidden');
+            document.getElementById('calendar-view').classList.replace('bg-gray-200', 'bg-blue-600');
+            document.getElementById('calendar-view').classList.replace('text-gray-800', 'text-white');
+            document.getElementById('list-view').classList.replace('bg-blue-600', 'bg-gray-200');
+            document.getElementById('list-view').classList.replace('text-white', 'text-gray-800');
+            const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+                initialView: 'dayGridMonth',
+                events: events.map(event => ({
+                    title: event.title,
+                    start: event.date,
+                    description: `${event.description}\nTime: ${event.time}\nLocation: ${event.location}`,
+                    backgroundColor: event.category === 'academic' ? '#2563eb' : '#dc2626',
+                    borderColor: event.category === 'academic' ? '#1e40af' : '#b91c1c'
+                })),
+                eventDidMount: function(info) {
+                    info.el.setAttribute('title', info.event.extendedProps.description);
+                }
+            });
+            calendar.render();
+        });
+
+        // Load events from XLSX if available
+        const eventData = loadFileData('events.xlsx');
+        if (eventData) {
+            const eventLines = eventData.split('\n').slice(1);
+            events.length = 0; // Clear existing events
+            eventLines.forEach(line => {
+                const [date, title, description, category, time, location, registerLink] = line.split(',');
+                if (date && title && description && category) {
+                    events.push({ 
+                        date, 
+                        title, 
+                        description, 
+                        category, 
+                        time: time || 'TBA', 
+                        location: location || 'TBA', 
+                        registerLink: registerLink || '#'
+                    });
+                }
+            });
+        }
+        renderEvents();
+
+        // Parallax effect for hero section
+        window.addEventListener('scroll', () => {
+            const hero = document.querySelector('.hero-bg');
+            const scrollPosition = window.pageYOffset;
+            hero.style.backgroundPositionY = `${scrollPosition * 0.5}px`;
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            root: null,
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.slide-in-left, .slide-in-right').forEach(element => {
+            observer.observe(element);
+        });
+    </script>
+</body>
+</html>
